@@ -13,9 +13,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-# =============================================================================
-# CONFIGURAÇÃO DA PÁGINA
-# =============================================================================
+
+# ------------------------------------CONFIGURAÇÃO DA PÁGINA------------------------------------
+
 st.set_page_config(
     page_title="Prêmio Oceanos · Dashboard",
     page_icon="📚",
@@ -23,7 +23,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# CSS personalizado
+# ------------------------------------CSS personalizado------- ----------------------------- 
 st.markdown("""
 <style>
     /* Fundo e tipografia geral */
@@ -87,9 +87,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# =============================================================================
-# CONEXÃO E CACHE DE DADOS
-# =============================================================================
+
+# ------------------------------------CONEXÃO E CACHE DE DADOS------------------------------------
+
 @st.cache_data
 def carregar_dados():
     conn = create_engine("postgresql+psycopg2://postgres:masterkey@localhost:5432/dwfinal")
@@ -191,7 +191,7 @@ def carregar_dados():
         HAVING SUM(f.indicador_vencedor) > 0 ORDER BY SUM(f.indicador_vencedor) DESC
     """, conn)
 
-    # PostgreSQL: conexão gerenciada pelo SQLAlchemy
+    # conexão gerenciada pelo SQLAlchemy
     return (inscricoes_ano, genero_literario_ano, genero_autor_ano,
             funil_genero, paises, genero_autor_total, faixa_etaria,
             top_editoras, autopublicacao_ano, editoras_vitorias)
@@ -201,9 +201,9 @@ def carregar_dados():
  df_paises, df_gen_autor, df_faixa, df_editoras,
  df_autopub, df_edit_vit) = carregar_dados()
 
-# =============================================================================
-# PALETA DE CORES
-# =============================================================================
+
+# ------------------------------------ PALETA DE CORES------------------------------------ 
+
 CORES_GENERO  = {"Poesia": "#e8c97e", "Romance": "#7eb8e8",
                  "Conto": "#a8e87e",  "Crônica": "#e87eb8", "Dramaturgia": "#b87ee8"}
 CORES_AUTOR   = {"Feminino": "#e87eb8", "Masculino": "#7eb8e8",
@@ -212,9 +212,9 @@ TEMPLATE      = "plotly_dark"
 COR_DESTAQUE  = "#e8c97e"
 COR_SECUNDARIA = "#7eb8e8"
 
-# =============================================================================
-# SIDEBAR — FILTROS
-# =============================================================================
+
+# ------------------------------------ SIDEBAR — FILTROS ------------------------------------ 
+
 with st.sidebar:
     st.markdown("## 📚 Prêmio Oceanos")
     st.markdown("---")
@@ -236,23 +236,21 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Fonte: Histórico de inscrições do Prêmio Oceanos · 2015–2024")
 
-# Aplicar filtros
+# ------------------------------------ Aplicar filtros ------------------------------------
 anos_range = list(range(ano_min, ano_max + 1))
 df_ano_f        = df_ano[df_ano["ano"].isin(anos_range)]
 df_gen_lit_f    = df_gen_lit[df_gen_lit["ano"].isin(anos_range) & df_gen_lit["genero_livro"].isin(generos_sel)]
 df_gen_autor_f  = df_gen_autor_ano[df_gen_autor_ano["ano"].isin(anos_range)]
 df_autopub_f    = df_autopub[df_autopub["ano"].isin(anos_range)]
 
-# =============================================================================
-# CABEÇALHO
-# =============================================================================
+
+# ------------------------------------ CABEÇALHO------------------------------------
 st.markdown('<p class="main-title">📚 Prêmio Oceanos de Literatura</p>', unsafe_allow_html=True)
 st.markdown('<p class="main-subtitle">Análise histórica das inscrições · 2015–2024</p>', unsafe_allow_html=True)
 st.markdown("")
 
-# =============================================================================
-# KPIs
-# =============================================================================
+
+#------------------------------------  KPIs------------------------------------
 total_ins  = int(df_ano_f["total"].sum())
 total_semi = int(df_ano_f["semifinalistas"].sum())
 total_fin  = int(df_ano_f["finalistas"].sum())
@@ -273,9 +271,8 @@ for col, valor, label in [
 
 st.markdown("")
 
-# =============================================================================
-# LINHA 1 — Evolução temporal + Gêneros literários
-# =============================================================================
+# ------------------------------------ LINHA 1 — Evolução temporal + Gêneros literários------------------------------------ 
+
 st.markdown('<p class="section-title">Evolução temporal</p>', unsafe_allow_html=True)
 col1, col2 = st.columns([1.1, 1])
 
@@ -315,9 +312,10 @@ with col2:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-# =============================================================================
-# LINHA 2 — Funil de seleção + Participação feminina
-# =============================================================================
+
+
+# ------------------------------------ LINHA 2 — Funil de seleção + Participação feminina ------------------------------------
+
 st.markdown('<p class="section-title">Funil de seleção & Diversidade de gênero</p>', unsafe_allow_html=True)
 col3, col4 = st.columns(2)
 
@@ -377,9 +375,12 @@ with col4:
                   annotation_text="50%", annotation_position="right")
     st.plotly_chart(fig, use_container_width=True)
 
-# =============================================================================
-# LINHA 3 — Países + Faixa etária
-# =============================================================================
+
+
+
+
+# ------------------------------------ LINHA 3 — Países + Faixa etária ------------------------------------
+
 st.markdown('<p class="section-title">Diversidade & Representatividade</p>', unsafe_allow_html=True)
 col5, col6 = st.columns(2)
 
@@ -441,9 +442,12 @@ with col6:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-# =============================================================================
-# LINHA 4 — Mercado editorial
-# =============================================================================
+
+
+
+
+# ------------------------------------ LINHA 4 — Mercado editorial ------------------------------------
+
 st.markdown('<p class="section-title">Mercado editorial</p>', unsafe_allow_html=True)
 col7, col8 = st.columns([1.2, 1])
 
@@ -499,9 +503,11 @@ with col8:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-# =============================================================================
-# LINHA 5 — Editoras com vitórias (tabela detalhada)
-# =============================================================================
+
+
+
+#  ------------------------------------ LINHA 5 — Editoras com vitórias (tabela detalhada) ------------------------------------
+
 st.markdown('<p class="section-title">Editoras premiadas</p>', unsafe_allow_html=True)
 
 df_edit_show = df_edit_vit.rename(columns={
@@ -523,8 +529,8 @@ st.dataframe(
     },
 )
 
-# =============================================================================
+
 # RODAPÉ
-# =============================================================================
+
 st.markdown("")
 st.caption("Projeto Data Warehouse e BI — Prêmio Oceanos de Literatura · Análise e Desenvolvimento de Sistemas")
