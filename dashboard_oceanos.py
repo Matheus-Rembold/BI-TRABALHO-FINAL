@@ -18,7 +18,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Prêmio Oceanos · Dashboard",
-    page_icon="📚",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -216,7 +216,7 @@ COR_SECUNDARIA = "#7eb8e8"
 # ------------------------------------ SIDEBAR — FILTROS ------------------------------------ 
 
 with st.sidebar:
-    st.markdown("## 📚 Prêmio Oceanos")
+    st.markdown("##  Prêmio Oceanos")
     st.markdown("---")
 
     anos_disponiveis = sorted(df_ano["ano"].unique())
